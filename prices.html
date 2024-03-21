@@ -1,0 +1,171 @@
+<!-- About us page showing that this dog grooming studio is based in Gosfoth Newcastle upon Tyne and caters to small dogs-->
+<script src="./sanity.js"></script>
+
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Wags 4 Mags - About Us
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <style>
+   body {
+            font-family: 'Gill Sans', sans-serif;
+        }
+  </style>
+ </head>
+ <body class="bg-gray-100">
+  <div class="bg-violet-400 text-white">
+   <div class="max-w-7xl mx-auto sm:text-base md:text-3xl lg:text-4xl leading-none py-2 px-2 flex justify-between items-center">
+    <div class="flex items-center">
+     <i class="fas fa-paw mr-2">
+     </i>
+     <span>
+      Free spa treatment for new customers
+     </span>
+    </div>
+    <div class="flex items-center">
+    
+     <i class="fas fa-award ml-6 mr-2">
+     </i>
+     <span>
+      iPET trained
+     </span>
+    </div>
+   </div>
+  </div>
+  <nav class="bg-white shadow py-1">
+    <div class="max-w-7xl mx-auto flex justify-between items-center ">
+     <div class="flex items-center space-x-1 text-base md:text-3xl md:space-x-4 ml-1">
+      <a class="text-gray-700 font-semibold " href="./index.html">
+       Home<span class="visible md:invisible"> |</span>
+      </a>
+      <a class="text-gray-700 font-semibold " href="./gallery.html">
+        Pics<span class="visible md:invisible"> |</span>
+      </a>
+
+      <a class="text-gray-700 font-semibold " href="./about-us.html">
+        About<span class="visible md:invisible"> |</span>
+      </a>
+
+      <a class="text-gray-700 font-semibold " href="./teeth-cleaning.html">
+       Teeth<span class="visible md:invisible"> |</span>
+      </a>
+      <a class="text-gray-700 font-semibold " href="./terms.html">
+       Policy<span class="visible md:invisible"> |</span>
+      </a>
+      <a class="text-gray-700 font-semibold" href="./prices.html">
+       Prices<span class="visible md:invisible"> |</span>
+      </a>
+      <a class="text-gray-700 font-semibold" href="./contact.html">
+       Enquiry
+      </a>
+     </div>
+    </div>
+   </nav>
+  <div class="relative">
+    <div class="top-0 left-0 bg-gray-200 bg-opacity-50 flex items-center justify-center space-between">
+     <div class="w-9/12">
+         <div id="pricelist">
+             loading...
+         </div>
+     </div>
+    </div>
+   </div>
+   <div class="bg-violet-400 text-white py-4 sm:text-base md:text-3xl lg:text-4xl flex items-center ">
+    <span class="ml-2 text-left w-6/12">
+      <i class="fas fa-phone mr-1">
+      </i>
+      <span>
+        07426352773
+      </span>
+    </span>
+    <span class="text-right w-6/12 mr-2">
+      <i class="fas fa-envelope mr-1 text-right">
+        </i>
+        <span class="text-right">
+          hello@wags4mags.com
+        </span>
+    </span>
+  </div>
+ </body>
+</html>
+<script>
+            
+    let QUERY = encodeURIComponent(`*[_type == "price"]{
+title,
+description,
+services,
+'created': _createdAt
+}`);
+
+    // Compose the URL for your project's endpoint and add the query
+    let URL = globalThis.getUrl(QUERY)
+
+          // fetch the content
+   fetch(URL)
+        .then((res) => res.json())
+        .then(({ result }) => {
+
+
+          if (result.length > 0) {
+            let priceListDiv = document.querySelector("#pricelist");
+            
+            priceListDiv.textContent = ''
+            let ul = document.createElement('ul')
+            result.sort((a, b) => (a.created > b.created) ? 1 : -1)
+            result.forEach((priceListItem) => {
+
+              let mainSection = document.createElement('li')
+              mainSection.textContent = priceListItem?.title
+              mainSection.className = 'text-black-900 font-bold text-4xl my-10 text-center'
+              let mainSectionDescription = false;
+              if(priceListItem?.description) {
+                mainSectionDescription = document.createElement('li')
+                mainSectionDescription.textContent = priceListItem?.description
+                mainSection.className = 'text-black-900 font-bold text-4xl mt-10 text-center'
+                mainSectionDescription.className = 'text-gray-900 font-bold text-lg mb-10 text-center'
+              }
+              let sectionUl = document.createElement('ul')
+              let services = priceListItem?.services
+              services.forEach(service => {
+                let subSection = document.createElement('li')
+                let subSectionDescription = document.createElement('li')
+                let formattedBox = document.createElement('div')
+                formattedBox.className = 'flex items-center justify-center space-between'
+                let serviceDiv = document.createElement('div')
+                let price =  document.createElement('div')
+                serviceDiv.className='w-8/12 mb-4 text-lg lg:text-2xl text-center mr-2'
+                serviceDiv.textContent = service?.title
+                price.className='w-4/12 font-bold mb-4 text-lg lg:text-2xl text-left'
+                price.textContent = `£${service?.price}`
+                console.log(service.description)
+                subSectionDescription.textContent = service?.description
+                formattedBox.appendChild(serviceDiv)
+                formattedBox.appendChild(price)
+                subSection.appendChild(formattedBox)
+                sectionUl.appendChild(subSection)
+                if(subSectionDescription) {
+                  serviceDiv.className='w-8/12 text-lg lg:text-2xl text-center mr-2'
+                  price.className='w-4/12 font-bold text-lg lg:text-2xl text-left'
+                  subSectionDescription.className='mb-4 text-sm lg:text-2xl text-center mr-2 text-gray-600'
+                  subSection.appendChild(subSectionDescription)
+                }
+              })
+
+              ul.appendChild(mainSection)
+              if(priceListItem?.description) {
+                ul.appendChild(mainSectionDescription)
+              }
+              ul.appendChild(sectionUl)
+              priceListDiv.appendChild(ul)
+            });
+          }
+        })
+        .catch((err) => console.error(err));
+
+    </script>

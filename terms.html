@@ -1,10 +1,12 @@
+<!-- About us page showing that this dog grooming studio is based in Gosfoth Newcastle upon Tyne and caters to small dogs-->
 <script src="./sanity.js"></script>
+
 <html lang="en">
  <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <title>
-   Wags 4 Mags
+   Wags 4 Mags - About Us
   </title>
   <script src="https://cdn.tailwindcss.com">
   </script>
@@ -16,7 +18,7 @@
         }
   </style>
  </head>
- <body class="bg-gray-100 max-w-6xl">
+ <body class="bg-gray-100">
   <div class="bg-violet-400 text-white">
    <div class="max-w-7xl mx-auto sm:text-base md:text-3xl lg:text-4xl leading-none py-2 px-2 flex justify-between items-center">
     <div class="flex items-center">
@@ -66,15 +68,16 @@
     </div>
    </nav>
   <div class="relative">
-   <img alt="A realistic picture of a dog getting groomed with the dog only" class="w-full" height="768" src="https://d1rh80o8sbeucj.cloudfront.net/eyJidWNrZXQiOiJ3YWdzNG1hZ3NpbWFnZXMiLCJrZXkiOiJtYWdzLmpwZWciLCJlZGl0cyI6eyJmbGF0dGVuIjp0cnVlLCJub3JtYWxpc2UiOnRydWV9fQ==" width="1295"/>
-   <span class="flex justify-center">
-     <span class="rounded-2xl bg-violet-900 w-10/12 -mt-11">
-      <p id="description" class="text-base m-6  text-center  text-sm md:text-2xl text-white">
-        loading...
-      </p>
-     </span>
-      
-   </span>
+   <div class="top-0 left-0 bg-gray-200 bg-opacity-50 flex justify-center">
+    <div class="w-9/12">
+      <div class="text-red-700 text-2xl my-2">
+        When booking your appointment, you automatically accept the following Policy:
+      </div>
+        <div id="terms">
+            loading...
+        </div>
+    </div>
+   </div>
   </div>
   <div class="bg-violet-400 text-white py-4 sm:text-base md:text-3xl lg:text-4xl flex items-center ">
     <span class="ml-2 text-left w-6/12">
@@ -96,26 +99,47 @@
 </html>
 <script>
             
-  let QUERY = encodeURIComponent(`*[_type == "about"]{
+    let QUERY = encodeURIComponent(`*[_type == "terms"]{
 title,
-description
+term,
+'created': _createdAt
 }`);
 
-  // Compose the URL for your project's endpoint and add the query
-  let URL = globalThis.getUrl(QUERY)
+    // Compose the URL for your project's endpoint and add the query
+    let URL = globalThis.getUrl(QUERY)
 
-        // fetch the content
-  fetch(URL)
-      .then((res) => res.json())
-      .then(({ result }) => {
-          // get the list element, and the first item
-          let paragraph = document.querySelector("#description");
+          // fetch the content
+   fetch(URL)
+        .then((res) => res.json())
+        .then(({ result }) => {
 
           if (result.length > 0) {
-              // remove the placeholder content
-              paragraph.textContent = result[0].description
-          }
-      })
-      .catch((err) => console.error(err));
+            let termsDiv = document.querySelector("#terms");
 
-  </script>
+            termsDiv.textContent = ''
+            let ul = document.createElement('ul')
+            result.sort((a, b) => (a.created > b.created) ? 1 : -1)
+            result.forEach((singleTermList) => {
+              // create a list element for each pet
+
+              let mainSection = document.createElement('li')
+              mainSection.textContent = singleTermList?.title
+              mainSection.className = 'w-8/12 text-violet-400 font-bold text-2xl my-4'
+              let sectionUl = document.createElement('ul')
+              let terms = singleTermList?.term
+              terms.forEach((term) => {
+                let subSection = document.createElement('li')
+                subSection.textContent = term
+                subSection.className = 'list-disc'
+                sectionUl.appendChild(subSection)
+              })
+              ul.appendChild(mainSection)
+              ul.appendChild(sectionUl)
+              termsDiv.appendChild(ul)
+              
+            });
+          }
+        })
+        .catch((err) => console.error(err));
+
+    </script>

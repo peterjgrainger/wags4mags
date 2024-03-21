@@ -1,0 +1,66 @@
+{
+  "Name": "NestedRule",
+  "Priority": 100,
+  "VisibilityConfig": {
+    "SampledRequestsEnabled": true,
+    "CloudWatchMetricsEnabled": true,
+    "MetricName": "test"
+  },
+  "Action": {
+    "Block": {}
+  },
+  "Statement": {
+    "AndStatement": {
+      "Statements": [
+          { 
+            "LabelMatchStatement": {
+              "Key": "awswaf:managed:aws:core-rule-set:CrossSiteScripting_Body",
+              "Scope": "LABEL"
+            }
+          },
+          {
+            "NotStatement":
+            {
+              "Statement" :{
+                "AndStatement": {
+                  "Statements":[
+                    {
+                      "ByteMatchStatement": {
+                        "SearchString": "/api/enforcements/actions/upload_file",
+                        "FieldToMatch": {
+                          "UriPath": {}
+                        },
+                        "TextTransformations": [
+                          {
+                            "Priority": 0,
+                            "Type": "NONE"
+                          }
+                        ],
+                        "PositionalConstraint": "CONTAINS_WORD"
+                      }
+                    },
+                    {
+                      "ByteMatchStatement": {
+                        "SearchString": "content-type: application/octet-stream",
+                        "FieldToMatch": {
+                          "Body": {}
+                        },
+                        "TextTransformations": [
+                          {
+                            "Priority": 0,
+                            "Type": "NONE"
+                          }
+                        ],
+                        "PositionalConstraint": "CONTAINS_WORD"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+          
